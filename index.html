@@ -31,12 +31,41 @@
   <header><div class="emblem">✓</div><h1>ลงทะเบียนพนักงาน</h1><p>ยืนยันตัวตนเพื่อใช้บริการภายในบริษัท</p></header>
   <main><div class="card">
     <h2>เชื่อมบัญชี LINE กับรหัสพนักงาน</h2>
-    <p class="explain">กรอกรหัสพนักงานและรหัสยืนยันที่ได้รับจากฝ่ายบุคคล ระบบจะตรวจสอบรายชื่อจากฐานข้อมูลบริษัท</p>
+    
+<p class="explain">
+  กรุณากรอกรหัสพนักงาน ชื่อ-นามสกุล และเบอร์โทรศัพท์
+  ให้ตรงกับฐานข้อมูลบริษัท ระบบจะดึงข้อมูลแผนก
+  และชื่อ LINE ของคุณโดยอัตโนมัติ
+</p>
+
     <form id="registerForm" method="POST">
       <label for="employeeId">รหัสพนักงาน</label>
       <input id="employeeId" name="employeeId" maxlength="80" autocomplete="off" placeholder="เช่น EMP001" required>
-      <label for="pin">รหัสยืนยันจากฝ่ายบุคคล</label>
-      <input id="pin" name="pin" type="password" minlength="10" maxlength="100" autocomplete="one-time-code" placeholder="รหัสยืนยันเฉพาะบุคคล" required>
+     
+<label for="fullName">ชื่อ-นามสกุล</label>
+<input
+  id="fullName"
+  name="fullName"
+  type="text"
+  maxlength="160"
+  autocomplete="name"
+  placeholder="กรอกชื่อและนามสกุลจริง"
+  required
+>
+
+<label for="phone">เบอร์โทรศัพท์พนักงาน</label>
+<input
+  id="phone"
+  name="phone"
+  type="tel"
+  inputmode="tel"
+  maxlength="20"
+  autocomplete="tel"
+  pattern="[0-9+(). -]{9,20}"
+  placeholder="08xxxxxxxx"
+  required
+>
+
       <input type="hidden" name="idToken" id="idToken">
       <button type="submit" id="submitButton" disabled>กำลังเชื่อมต่อ LINE…</button>
     </form>
