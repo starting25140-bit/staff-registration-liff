@@ -1,117 +1,648 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
   <meta name="theme-color" content="#06c755">
-  <title>ลงทะเบียนพนักงาน</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif; color:#143048; background:#f3f8f7; }
-    header { padding: 26px 20px 40px; text-align:center; background:linear-gradient(135deg,#0d9569,#06c755); color:#fff; }
-    header .emblem { font-size:34px; padding-bottom:8px; }
-    header h1 { margin:0 0 6px; font-size:25px; }
-    header p { margin:0; font-size:14px; opacity:.93; }
-    main { max-width:460px; margin:-22px auto 26px; position:relative; padding:0 14px; }
-    .card { background:#fff; border-radius:18px; padding:24px 20px; box-shadow:0 8px 30px rgba(0,0,0,.075); }
-    h2 { font-size:18px; margin:0 0 8px; }
-    .explain { margin:0 0 20px; font-size:13px; line-height:1.7; color:#627483; }
-    label { display:block; font-size:14px; font-weight:650; margin:18px 0 8px; }
-    input { display:block; width:100%; padding:14px 12px; border:1px solid #cbd7de; border-radius:10px; font-size:16px; background:#fff; }
-    input:focus { outline:3px solid #b6e9d1; border-color:#08965c; }
-    button { width:100%; background:#06b958; border:0; padding:15px 12px; border-radius:11px; color:white; font-size:16px; font-weight:700; margin-top:24px; cursor:pointer; }
-    button:disabled { background:#a5beb0; cursor:not-allowed; }
-    .notice { border-radius:11px; background:#f1f6f5; color:#4b6570; font-size:12px; line-height:1.75; padding:14px; margin-top:20px; }
-    #status { margin:14px 0 0; font-size:13px; line-height:1.6; text-align:center; color:#496478; min-height:22px; }
-    footer { text-align:center; padding:0 20px 24px; color:#80929a; font-size:12px; }
-  </style>
+
+  <title>Employee Registration | ลงทะเบียนพนักงาน</title>
+
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-</head>
-<body>
-  <header><div class="emblem">✓</div><h1>ลงทะเบียนพนักงาน</h1><p>ยืนยันตัวตนเพื่อใช้บริการภายในบริษัท</p></header>
-  <main><div class="card">
-    <h2>เชื่อมบัญชี LINE กับรหัสพนักงาน</h2>
-    
-<p class="explain">
-  กรุณากรอกรหัสพนักงาน ชื่อ-นามสกุล และเบอร์โทรศัพท์
-  ให้ตรงกับฐานข้อมูลบริษัท ระบบจะดึงข้อมูลแผนก
-  และชื่อ LINE ของคุณโดยอัตโนมัติ
-</p>
 
-    <form id="registerForm" method="POST">
-      <label for="employeeId">รหัสพนักงาน</label>
-      <input id="employeeId" name="employeeId" maxlength="80" autocomplete="off" placeholder="เช่น EMP001" required>
-     
-<label for="fullName">ชื่อ-นามสกุล</label>
-<input
-  id="fullName"
-  name="fullName"
-  type="text"
-  maxlength="160"
-  autocomplete="name"
-  placeholder="กรอกชื่อและนามสกุลจริง"
-  required
->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<label for="phone">เบอร์โทรศัพท์พนักงาน</label>
-<input
-  id="phone"
-  name="phone"
-  type="tel"
-  inputmode="tel"
-  maxlength="20"
-  autocomplete="tel"
-  pattern="[0-9+(). -]{9,20}"
-  placeholder="08xxxxxxxx"
-  required
->
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system,
+        "Segoe UI", Tahoma, sans-serif;
+      background: #f3f8f7;
+      color: #173848;
+      min-height: 100vh;
+    }
 
-      <input type="hidden" name="idToken" id="idToken">
-      <button type="submit" id="submitButton" disabled>กำลังเชื่อมต่อ LINE…</button>
-    </form>
-    <p id="status" role="status" aria-live="polite">กรุณารอสักครู่</p>
-    <div class="notice">ข้อมูล LINE จะใช้เพื่อผูกกับรหัสพนักงานและตรวจสอบสิทธิ์ ข้อมูลการลงทะเบียนเก็บใน Google Sheets ของบริษัท ไม่ใช่ในหน้าเว็บสาธารณะนี้</div>
-  </div></main>
-  <footer>สำหรับพนักงานที่มีรายชื่ออยู่ในระบบบริษัทเท่านั้น</footer>
-  <script>
-    // ====== กรอกค่าสองรายการนี้เท่านั้น ======
-    const LIFF_ID = '2012052848-SZEFroC9';
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwR_kBY35dHtDafRtkwHG9aTxopqWP5-EDk1Jl8qSm_leNSSdioRXeZFPIJ03frQN09/exec';
-    // ===========================================
-    const form = document.getElementById('registerForm');
-    const button = document.getElementById('submitButton');
-    const status = document.getElementById('status');
-    const idTokenInput = document.getElementById('idToken');
+    header {
+      background: linear-gradient(
+        135deg,
+        #087f65,
+        #06c755
+      );
+      color: white;
+      text-align: center;
+      padding: 32px 18px 60px;
+    }
 
-    async function init() {
-      if (LIFF_ID.startsWith('PASTE_') || GAS_URL.startsWith('PASTE_')) {
-        status.textContent = 'เว็บไซต์ยังตั้งค่าไม่เสร็จ กรุณาติดต่อผู้ดูแล';
-        return;
+    .emblem {
+      font-size: 38px;
+      margin-bottom: 8px;
+    }
+
+    header h1 {
+      font-size: 25px;
+      margin: 0 0 5px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
+    main {
+      width: 75%;
+      max-width: 650px;
+      margin: -32px auto 28px;
+      position: relative;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 32px
+        rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6a7d87;
+      font-size: 13px;
+      margin: 0 0 23px;
+    }
+
+    .notice {
+      background: #effaf4;
+      border-left: 4px solid #06b958;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 22px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .notice-en {
+      color: #657c77;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 650;
+      margin: 19px 0 7px;
+    }
+
+    .en-label {
+      display: block;
+      font-size: 12px;
+      color: #829099;
+      font-weight: 400;
+      margin-top: 3px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #cbd9d6;
+      border-radius: 11px;
+      background: #ffffff;
+      font-size: 16px;
+      color: #173848;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0caa72;
+      box-shadow: 0 0 0 3px
+        rgba(6, 199, 85, 0.14);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #75868d;
+      margin-top: 7px;
+      line-height: 1.5;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      background: linear-gradient(
+        135deg,
+        #079f65,
+        #06c755
+      );
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 28px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #a5bfb4;
+      cursor: not-allowed;
+    }
+
+    #status {
+      font-size: 13px;
+      text-align: center;
+      color: #53716b;
+      line-height: 1.6;
+      min-height: 22px;
+      margin-top: 15px;
+    }
+
+    .privacy {
+      background: #f6f8fa;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: #6b7d85;
+      margin-top: 19px;
+    }
+
+    footer {
+      text-align: center;
+      color: #84949b;
+      font-size: 12px;
+      padding: 0 20px 30px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 26px 16px 53px;
       }
-      try {
-        await liff.init({ liffId: LIFF_ID });
-        if (!liff.isLoggedIn()) { liff.login(); return; }
-        const idToken = liff.getIDToken();
-        if (!idToken) throw new Error('ไม่ได้รับ ID Token — ตรวจสอบว่า LIFF เปิด scope openid แล้ว');
-        idTokenInput.value = idToken;
-        form.action = GAS_URL;
-        button.disabled = false;
-        button.textContent = 'ยืนยันการลงทะเบียน';
-        status.textContent = 'เชื่อมบัญชี LINE พร้อมแล้ว';
-      } catch (error) {
-        status.textContent = 'เปิดหน้า LINE ไม่สำเร็จ: ' + (error.message || error);
+
+      header h1 {
+        font-size: 23px;
+      }
+
+      main {
+        width: 94%;
+        margin-top: -28px;
+      }
+
+      .card {
+        padding: 24px 19px;
+        border-radius: 18px;
+      }
+
+      h2 {
+        font-size: 18px;
       }
     }
-    form.addEventListener('submit', (event) => {
-      if (!idTokenInput.value || !GAS_URL.startsWith('https://script.google.com/macros/s/')) {
-        event.preventDefault(); status.textContent = 'ยังไม่พร้อมส่งข้อมูล กรุณาติดต่อผู้ดูแล';
-        return;
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="emblem">✓</div>
+
+    <h1>ลงทะเบียนพนักงาน</h1>
+
+    <p>Employee Registration</p>
+  </header>
+
+
+  <!-- REGISTRATION FORM -->
+  <main>
+    <div class="card">
+
+      <h2>เชื่อมบัญชี LINE</h2>
+
+      <p class="subtitle">
+        Link your LINE account with your Employee ID
+      </p>
+
+
+      <!-- INSTRUCTIONS -->
+      <div class="notice">
+
+        <strong>คำแนะนำการลงทะเบียน</strong>
+
+        <div>
+          กรุณากรอกรหัสพนักงาน ชื่อ-นามสกุล
+          ภาษาอังกฤษ และเบอร์โทรศัพท์
+          ให้ตรงกับฐานข้อมูลบริษัท
+        </div>
+
+        <div class="notice-en">
+          <strong>Registration Instructions</strong>
+          <div>
+            Please enter your Employee ID,
+            full name in English, and phone
+            number as recorded in the
+            company's employee database.
+          </div>
+        </div>
+
+      </div>
+
+
+      <form
+        id="registerForm"
+        method="POST"
+      >
+
+        <!-- EMPLOYEE ID -->
+        <label for="employeeId">
+
+          รหัสพนักงาน
+
+          <span class="en-label">
+            Employee ID
+          </span>
+
+        </label>
+
+        <input
+          id="employeeId"
+          name="employeeId"
+          type="text"
+          maxlength="80"
+          autocomplete="off"
+          placeholder="เช่น 70 / e.g. 70"
+          required
+        >
+
+
+        <!-- ENGLISH NAME -->
+        <label for="fullName">
+
+          ชื่อ-นามสกุล (ภาษาอังกฤษ)
+
+          <span class="en-label">
+            Full Name (English)
+          </span>
+
+        </label>
+
+        <input
+          id="fullName"
+          name="fullName"
+          type="text"
+          maxlength="160"
+          autocomplete="name"
+          placeholder="Fahsai Lali"
+          required
+        >
+
+        <div class="hint">
+          ไม่ต้องใส่ Mr. / Mrs. / Ms.
+          <div>
+            Do not include Mr., Mrs. or Ms.
+          </div>
+        </div>
+
+
+        <!-- PHONE -->
+        <label for="phone">
+
+          เบอร์โทรศัพท์
+
+          <span class="en-label">
+            Phone Number
+          </span>
+
+        </label>
+
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputmode="numeric"
+          maxlength="10"
+          autocomplete="tel"
+          pattern="[0-9]{9,10}"
+          placeholder="08XXXXXXXX"
+          required
+        >
+
+        <div class="hint">
+          กรุณาใช้เบอร์โทรศัพท์ที่บันทึกไว้กับบริษัท
+          <div>
+            Use the phone number registered
+            with the company.
+          </div>
+        </div>
+
+
+        <!-- LINE ID TOKEN -->
+        <input
+          type="hidden"
+          name="idToken"
+          id="idToken"
+        >
+
+
+        <!-- SUBMIT -->
+        <button
+          id="submitButton"
+          type="submit"
+          disabled
+        >
+          กำลังเชื่อมต่อ LINE...
+        </button>
+
+      </form>
+
+
+      <!-- SYSTEM STATUS -->
+      <p
+        id="status"
+        role="status"
+        aria-live="polite"
+      >
+        กรุณารอสักครู่ / Please wait...
+      </p>
+
+
+      <!-- PRIVACY -->
+      <div class="privacy">
+
+        🔒 ข้อมูลของคุณจะใช้เพื่อ
+        ตรวจสอบและเชื่อมบัญชี LINE
+        กับข้อมูลพนักงานของบริษัท
+
+        <div style="margin-top:5px;">
+          Your information will be used
+          to verify your employee record
+          and link your LINE account.
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+
+  <footer>
+    สำหรับพนักงานบริษัทเท่านั้น
+    <div>
+      For company employees only
+    </div>
+  </footer>
+
+
+  <script>
+
+    // ======================================
+    // LINE LIFF CONFIGURATION
+    // ======================================
+
+    const LIFF_ID =
+      '2012052848-SZEFroC9';
+
+    const GAS_URL =
+      'https://script.google.com/macros/s/AKfycbwR_kBY35dHtDafRtkwHG9aTxopqWP5-EDk1Jl8qSm_leNSSdioRXeZFPIJ03frQN09/exec';
+
+
+    // ======================================
+    // ELEMENTS
+    // ======================================
+
+    const form =
+      document.getElementById('registerForm');
+
+    const button =
+      document.getElementById('submitButton');
+
+    const statusText =
+      document.getElementById('status');
+
+    const idTokenInput =
+      document.getElementById('idToken');
+
+    const fullNameInput =
+      document.getElementById('fullName');
+
+    const employeeIdInput =
+      document.getElementById('employeeId');
+
+    const phoneInput =
+      document.getElementById('phone');
+
+
+    // ======================================
+    // INITIALIZE LINE LIFF
+    // ======================================
+
+    async function init() {
+
+      try {
+
+        statusText.textContent =
+          'กำลังเชื่อมต่อ LINE... / Connecting to LINE...';
+
+        await liff.init({
+          liffId: LIFF_ID
+        });
+
+        if (!liff.isLoggedIn()) {
+
+          liff.login();
+          return;
+
+        }
+
+        const idToken = liff.getIDToken();
+
+        if (!idToken) {
+
+          throw new Error(
+            'ไม่พบ LINE ID Token กรุณาตรวจสอบ LIFF openid scope'
+          );
+
+        }
+
+        idTokenInput.value = idToken;
+
+        form.action = GAS_URL;
+
+        button.disabled = false;
+
+        button.textContent =
+          'ลงทะเบียน / Register';
+
+        statusText.textContent =
+          'เชื่อมต่อ LINE สำเร็จ พร้อมลงทะเบียน / Ready to register';
+
+      } catch (error) {
+
+        console.error(error);
+
+        statusText.textContent =
+          'ไม่สามารถเชื่อมต่อ LINE ได้ / Unable to connect to LINE: ' +
+          (error.message || error);
+
+        button.disabled = true;
+
       }
-      button.disabled = true;
-      button.textContent = 'กำลังตรวจสอบ…';
-      status.textContent = 'กำลังส่งข้อมูลเพื่อตรวจสอบ โปรดรอสักครู่';
-    });
+
+    }
+
+
+    // ======================================
+    // VALIDATE REGISTRATION
+    // ======================================
+
+    form.addEventListener(
+      'submit',
+      function(event) {
+
+        const employeeId =
+          employeeIdInput.value.trim();
+
+        const fullName =
+          fullNameInput.value.trim();
+
+        const phone =
+          phoneInput.value.trim();
+
+
+        // Employee ID
+        if (!employeeId) {
+
+          event.preventDefault();
+
+          alert(
+            'กรุณากรอกรหัสพนักงาน\nPlease enter your Employee ID.'
+          );
+
+          return;
+
+        }
+
+
+        // English name only
+        const englishNamePattern =
+          /^[A-Za-z][A-Za-z .'-]*$/;
+
+        if (!englishNamePattern.test(fullName)) {
+
+          event.preventDefault();
+
+          alert(
+            'กรุณากรอกชื่อ-นามสกุลเป็นภาษาอังกฤษเท่านั้น\n' +
+            'Please enter your full name in English.'
+          );
+
+          fullNameInput.focus();
+
+          return;
+
+        }
+
+
+        // Do not enter title
+        if (/^(Mr|Mrs|Ms)\.?\s+/i.test(fullName)) {
+
+          event.preventDefault();
+
+          alert(
+            'ไม่ต้องใส่ Mr. / Mrs. / Ms.\n' +
+            'Please enter your name without a title.'
+          );
+
+          fullNameInput.focus();
+
+          return;
+
+        }
+
+
+        // Phone number
+        if (!/^[0-9]{9,10}$/.test(phone)) {
+
+          event.preventDefault();
+
+          alert(
+            'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง\n' +
+            'Please enter a valid phone number.'
+          );
+
+          phoneInput.focus();
+
+          return;
+
+        }
+
+
+        // LINE Token
+        if (!idTokenInput.value) {
+
+          event.preventDefault();
+
+          statusText.textContent =
+            'ไม่พบ LINE ID Token กรุณาเปิดผ่าน LINE อีกครั้ง';
+
+          return;
+
+        }
+
+
+        if (
+          !GAS_URL.startsWith(
+            'https://script.google.com/macros/s/'
+          )
+        ) {
+
+          event.preventDefault();
+
+          statusText.textContent =
+            'Registration API URL ไม่ถูกต้อง';
+
+          return;
+
+        }
+
+
+        // Ready to submit
+        employeeIdInput.value = employeeId;
+        fullNameInput.value = fullName;
+        phoneInput.value = phone;
+
+        button.disabled = true;
+
+        button.textContent =
+          'กำลังตรวจสอบ... / Verifying...';
+
+        statusText.textContent =
+          'กำลังตรวจสอบข้อมูลพนักงาน กรุณารอสักครู่ / Verifying employee information...';
+
+      }
+    );
+
+
+    // ======================================
+    // START
+    // ======================================
+
     init();
+
   </script>
+
 </body>
 </html>
